@@ -5,22 +5,49 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.punkapp.model.PunkBean
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    var data by mutableStateOf<PunkBean?>(null)
+    var data: PunkBean? by mutableStateOf<PunkBean?>(value = null)
+    var detailBeerData: PunkBeanItem? by mutableStateOf<PunkBeanItem?>(value = null)
+    var favoriteIcon by mutableStateOf(false)
+    private var favoritesBeersList = mutableStateListOf<PunkBeanItem?>()
+    val listOfBeers : List<PunkBeanItem?> = favoritesBeersList
+    var errorMessage = mutableStateOf("")
+    private var runInProgress = mutableStateOf(false)
 
     fun loadData() {
         data = null
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                data = PunkAPI.loadActivity()
+                data = PunkAPI.loadBeers()
+                if(data == null){
+                    throw Exception("No results")
+                }
+                errorMessage.value = ""
             }
             catch (e:Exception){
-                println("MANNNN ERRRROR:  ${e.message}")
+                errorMessage.value = "Error:  ${e.message}"
             }
+            runInProgress.value = false
         }
     }
+
+    fun loadDetailBeerData(navHostController: NavHostController, detailData: PunkBeanItem?) {
+        detailBeerData = detailData
+        navHostController.navigate(Routes.DetailScreen.route)
+    }
+
+    fun addToFavorites(data: PunkBeanItem?){
+        favoritesBeersList.add(data)
+        favoriteIcon = !favoriteIcon
+    }
+
+    fun removeFromFavorites(data: PunkBeanItem?){
+        favoritesBeersList.remove(data)
+        favoriteIcon = !favoriteIcon
+    }
+
 }

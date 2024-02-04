@@ -5,24 +5,22 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 object PunkAPI {
-    val gson = Gson()
-    val client = OkHttpClient()
+    private val gson = Gson()
+    private val client = OkHttpClient()
 
-    fun loadActivity(): PunkBean {
+    fun loadBeers(): PunkBean {
         val json: String = sendGet("https://api.punkapi.com/v2/beers")
-        val data : PunkBean = gson.fromJson(json, PunkBean::class.java)
-
-        return data
+        return gson.fromJson(json, PunkBean::class.java)
     }
 
-    fun sendGet(url: String): String {
+    private fun sendGet(url: String): String {
         println("url : $url")
 
         val request = Request.Builder().url(url).build()
 
         return client.newCall(request).execute().use {
             if (!it.isSuccessful) {
-                throw Exception("Réponse du serveur incorrect :${it.code}")
+                throw Exception("Server Status: ${it.code}")
             }
             it.body.string()
         }

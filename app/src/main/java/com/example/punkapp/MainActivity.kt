@@ -6,10 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.punkapp.model.MainViewModel
 import com.example.punkapp.model.Routes
 import com.example.punkapp.ui.theme.PunkAppTheme
+import com.example.punkapp.ui.theme.screens.DetailScreen
+import com.example.punkapp.ui.theme.screens.FavoritesScreen
 import com.example.punkapp.ui.theme.screens.Homescreen
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +46,16 @@ fun AppNavigation(){
         composable(
             Routes.HomeScreen.route){
             Homescreen(navHostController = navController, viewModel= viewModel)
+        }
+
+        composable(
+            Routes.DetailScreen.route){
+            DetailScreen(navHostController = navController, viewModel= viewModel)
+        }
+
+        composable(
+            Routes.FavoritesScreen.route){
+            FavoritesScreen(navHostController = navController, viewModel= viewModel)
         }
     }
 }

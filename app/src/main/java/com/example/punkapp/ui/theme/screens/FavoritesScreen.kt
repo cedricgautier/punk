@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -28,27 +26,17 @@ import androidx.navigation.NavHostController
 import com.example.punkapp.model.MainViewModel
 import com.example.punkapp.model.Routes
 
-
 @Composable
-
-fun Homescreen (navHostController: NavHostController, viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
-    LaunchedEffect("") {
-        viewModel.loadData()
-    }
-
+fun FavoritesScreen (navHostController: NavHostController, viewModel: MainViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navHostController.navigate(Routes.FavoritesScreen.route)
+                navHostController.navigate(Routes.HomeScreen.route)
             }) {
-                Icon(Icons.Default.Star, contentDescription = "Favorites")
+                Icon(Icons.Default.Home, contentDescription = "Favorites")
             }
         }
     ) { innerPadding ->
-
-        if(viewModel.errorMessage.value.isNotBlank()) {
-            ErrorView(message = viewModel.errorMessage.value)
-        }
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -57,8 +45,7 @@ fun Homescreen (navHostController: NavHostController, viewModel: MainViewModel =
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            items(viewModel.data?.size ?: 0) { item ->
-
+            items(viewModel.listOfBeers.size) { item ->
                 Box(
                     modifier = Modifier
                         .padding(8.dp)
@@ -68,19 +55,19 @@ fun Homescreen (navHostController: NavHostController, viewModel: MainViewModel =
                         .clickable {
                             viewModel.loadDetailBeerData(
                                 navHostController,
-                                viewModel.data?.get(item)
+                                viewModel.listOfBeers.get(item)
                             )
                         },
                 ) {
                     Column {
                         Text(
-                            text = viewModel.data?.get(item)?.name ?: "",
+                            text = viewModel.listOfBeers.get(item)?.name ?: "",
                             modifier = Modifier.padding(6.dp),
                             color = Color.Blue,
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            text = viewModel.data?.get(item)?.description ?: "",
+                            text = viewModel.listOfBeers.get(item)?.description ?: "",
                             modifier = Modifier.padding(6.dp)
                         )
                     }
@@ -91,15 +78,3 @@ fun Homescreen (navHostController: NavHostController, viewModel: MainViewModel =
     }
 }
 
-
-@Composable
-fun ErrorView(modifier:Modifier =Modifier, message:String){
-    Text(
-        text = message,
-        color= MaterialTheme.colorScheme.error,
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.errorContainer)
-            .padding(8.dp)
-    )
-}
